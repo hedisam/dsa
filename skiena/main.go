@@ -17,4 +17,9 @@ func main() {
 	}
 
 	fmt.Println(g)
+
+	bfs := graph.NewBFS(g, 3)
+	bfs.Run()
+	path := bfs.PathTo(0)
+	fmt.Println(path)
 }
