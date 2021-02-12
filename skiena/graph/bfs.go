@@ -13,34 +13,35 @@ type BFS struct {
 	earlyProcessor func(v int)
 	edgeProcessor func(u, v int)
 	lateProcessor func(v int)
+
+	initialized bool
 }
 
 func NewBFS() *BFS {
-	s := &BFS{}
+	s := &BFS{
+		earlyProcessor: func(v int) {},
+		edgeProcessor: func(u, v int) {},
+		lateProcessor: func(v int) {},
+	}
 	return s
 }
 
-func (bfs *BFS) init(g *Graph) {
+func (bfs *BFS) Init(g *Graph) {
+	if bfs.initialized {
+		return
+	}
+	bfs.initialized = true
+
 	bfs.processed = make([]bool, g.nVertices)
 	bfs.discovered = make([]bool, g.nVertices)
 	bfs.parent = make([]int, g.nVertices)
 	for i := 0; i < g.nVertices; i++ {
 		bfs.parent[i] = -1
 	}
-
-	if bfs.earlyProcessor == nil {
-		bfs.earlyProcessor = bfs.processVertexEarly
-	}
-	if bfs.edgeProcessor == nil {
-		bfs.edgeProcessor = bfs.processEdge
-	}
-	if bfs.lateProcessor == nil {
-		bfs.lateProcessor = bfs.processVertexLate
-	}
 }
 
 func (bfs *BFS) Search(g *Graph, source int) {
-	bfs.init(g)
+	bfs.Init(g)
 
 	q := queue.NewArrayQueue(g.nVertices)
 
