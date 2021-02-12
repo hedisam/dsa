@@ -6,69 +6,55 @@ import (
 )
 
 type BFS struct {
-	g *Graph
 	processed []bool // which vertices have been processed
 	discovered []bool // which vertices have been found
 	parent []int // discovery relation
-	source int // source vertex
+
+	earlyProcessor func(v int)
+	edgeProcessor func(u, v int)
+	lateProcessor func(v int)
 }
 
-func NewBFS(g *Graph, source int) *BFS {
-	bfs := &BFS{g: g, source: source}
-	bfs.init()
-	return bfs
+func NewBFS() *BFS {
+	s := &BFS{}
+	return s
 }
 
-func (bfs *BFS) init() {
-	bfs.processed = make([]bool, bfs.g.nVertices)
-	bfs.discovered = make([]bool, bfs.g.nVertices)
-	bfs.parent = make([]int, bfs.g.nVertices)
-	for i := 0; i < bfs.g.nVertices; i++ {
+func (bfs *BFS) init(g *Graph) {
+	bfs.processed = make([]bool, g.nVertices)
+	bfs.discovered = make([]bool, g.nVertices)
+	bfs.parent = make([]int, g.nVertices)
+	for i := 0; i < g.nVertices; i++ {
 		bfs.parent[i] = -1
 	}
-}
 
-func (bfs *BFS) HasPath(x int) bool {
-	return bfs.parent[x] > -1
-}
-
-func (bfs *BFS) PathTo(x int) []int {
-	var path []int
-	bfs.pathTo(x, &path)
-	return path
-}
-
-func (bfs *BFS) pathTo(x int, path *[]int) {
-	//if bfs.source != x {
-	//	bfs.pathTo(bfs.parent[x], path)
-	//}
-	//*path = append(*path, x)
-	if bfs.parent[x] == -1 {
-		// no parent, no path
-		return
+	if bfs.earlyProcessor == nil {
+		bfs.earlyProcessor = bfs.processVertexEarly
 	}
-	if bfs.source == x {
-		*path = append(*path, x)
-	} else {
-		bfs.pathTo(bfs.parent[x], path)
-		*path = append(*path, x)
+	if bfs.edgeProcessor == nil {
+		bfs.edgeProcessor = bfs.processEdge
+	}
+	if bfs.lateProcessor == nil {
+		bfs.lateProcessor = bfs.processVertexLate
 	}
 }
 
-func (bfs *BFS) Run() {
-	q := queue.NewArrayQueue(bfs.g.nVertices)
+func (bfs *BFS) Search(g *Graph, source int) {
+	bfs.init(g)
 
-	q.Enqueue(bfs.source)
-	bfs.discovered[bfs.source] = true
+	q := queue.NewArrayQueue(g.nVertices)
+
+	q.Enqueue(source)
+	bfs.discovered[source] = true
 
 	for !q.Empty() {
 		u := q.Dequeue()
-		bfs.processVertexEarly(u)
+		bfs.earlyProcessor(u)
 		bfs.processed[u] = true
-		for p := bfs.g.edges[u]; p != nil; p = p.next {
+		for p := g.edges[u]; p != nil; p = p.next {
 			v := p.y
-			if !bfs.processed[v] || bfs.g.directed {
-				bfs.processEdge(u, v)
+			if !bfs.processed[v] || g.directed {
+				bfs.edgeProcessor(u, v)
 			}
 			if !bfs.discovered[v] {
 				q.Enqueue(v)
@@ -76,7 +62,7 @@ func (bfs *BFS) Run() {
 				bfs.parent[v] = u
 			}
 		}
-		bfs.processVertexLate(u)
+		bfs.lateProcessor(u)
 	}
 }
 
