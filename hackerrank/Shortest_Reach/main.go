@@ -1,11 +1,7 @@
 package Shortest_Reach
 
 import (
-	"bufio"
 	"fmt"
-	"io"
-	"os"
-	"strconv"
 	"strings"
 )
 
@@ -24,14 +20,14 @@ type Graph struct {
 }
 
 // InsertEdge from x to y.
-func (g *Graph) InsertEdge(x, y int) {
-	g.insertEdge(x, y, g.directed)
+func (g *Graph) InsertEdge(x, y, weight int) {
+	g.insertEdge(x, y, weight, g.directed)
 }
 
-func (g *Graph) insertEdge(x, y int, directed bool) {
+func (g *Graph) insertEdge(x, y, weight int, directed bool) {
 	edge := &EdgeNode{
 		y:      y,
-		weight: 1,
+		weight: weight,
 		// point next to the head of the x's adj list. then we assign this new edge to the head of the x's adj list.
 		next:   g.edges[x],
 	}
@@ -45,7 +41,7 @@ func (g *Graph) insertEdge(x, y int, directed bool) {
 		g.nEdges++
 		return
 	}
-	g.insertEdge(y, x, true)
+	g.insertEdge(y, x, weight, true)
 }
 
 // String returns a string displaying the graph.
@@ -113,13 +109,94 @@ func (s *ArrayQueue) Array() []int {
 
 //////////////////////////////// BFS ///////////////////////////
 
+type BFS struct {
+	processed []bool // which vertices have been processed
+	discovered []bool // which vertices have been found
+	parent []int // discovery relation
+
+	earlyProcessor func(v int)
+	edgeProcessor func(u, v int)
+	lateProcessor func(v int)
+}
+
+func NewBFS(g *Graph) *BFS {
+	s := &BFS{
+		processed: make([]bool, g.nVertices),
+		discovered: make([]bool, g.nVertices),
+		parent: make([]int, g.nVertices),
+		earlyProcessor: func(v int) {},
+		edgeProcessor: func(u, v int) {},
+		lateProcessor: func(v int) {},
+	}
+	s.init()
+	return s
+}
+
+func (bfs *BFS) init() {
+	for i := 0; i < len(bfs.parent); i++ {
+		bfs.parent[i] = -1
+	}
+}
+
+func (bfs *BFS) Search(g *Graph, source int) {
+	q := NewArrayQueue(g.nVertices)
+
+	q.Enqueue(source)
+	bfs.discovered[source] = true
+
+	for !q.Empty() {
+		u := q.Dequeue()
+		bfs.earlyProcessor(u)
+		bfs.processed[u] = true
+		for p := g.edges[u]; p != nil; p = p.next {
+			v := p.y
+			if !bfs.processed[v] || g.directed {
+				bfs.edgeProcessor(u, v)
+			}
+			if !bfs.discovered[v] {
+				q.Enqueue(v)
+				bfs.discovered[v] = true
+				bfs.parent[v] = u
+			}
+		}
+		bfs.lateProcessor(u)
+	}
+}
 
 
 ////////////////////// the Problem /////////////////////////////////
 
 // Complete the bfs function below.
 func bfs(n int32, m int32, edges [][]int32, s int32) []int32 {
+	g := NewGraph(int(n), false)
+	for _, edge := range edges {
+		g.InsertEdge(int(edge[0]-1), int(edge[1]-1), 6)
+	}
 
+	levels := make([]int, n)
+	dist := make([]int32, n)
+
+	// vertices are indexed starting from 1, not zero
+	s--
+	search := NewBFS(g)
+	search.earlyProcessor = func(v int) {
+		if v != int(s) {
+			levels[v] = levels[search.parent[v]] + 1
+			dist[v] = int32(levels[v]) * 6
+		}
+	}
+
+	search.Search(g, int(s))
+
+	// removing the source from dist array
+	dist = append(dist[:s], dist[s+1:]...)
+	// setting unreachable nodes to -1
+	for i := 0; i < len(dist); i++ {
+		if dist[i] == 0 {
+			dist[i] = -1
+		}
+	}
+	return dist
 }
 
 func main() {
