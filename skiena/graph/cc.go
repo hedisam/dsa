@@ -44,8 +44,7 @@ func (cc *CC) Id(v int) int {
 }
 
 func (cc *CC) process(g *Graph) {
-	bfs := NewBFS()
-	bfs.Init(g)
+	bfs := NewBFS(g)
 	bfs.earlyProcessor = func(v int) {
 		cc.components[v] = cc.cNumber
 		fmt.Printf("CC: vertex %d belongs to component %d\n", v, cc.cNumber)

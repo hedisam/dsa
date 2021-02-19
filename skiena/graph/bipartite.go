@@ -23,8 +23,7 @@ func IsBipartite(g *Graph) bool {
 	b := &Bipartite{colors: make([]color, g.nVertices)}
 	bipartite := true
 
-	bfs := NewBFS()
-	bfs.Init(g)
+	bfs := NewBFS(g)
 	bfs.edgeProcessor = func(u, v int) {
 		if b.colors[u] == b.colors[v] {
 			fmt.Printf("Not bipartite becuase of edge (%d, %d)\n", u, v)
