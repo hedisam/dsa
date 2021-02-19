@@ -89,7 +89,7 @@ func (dfs *DFS) Search(v int) {
 
 	// exit phase for the vertex
 
-	// process the vertex on finishing time if necassry
+	// process the vertex on finishing time if necessary
 	dfs.lateProcessor(v)
 	// keep track of its exit time
 	dfs.time += 1
