@@ -2,7 +2,7 @@ package graph
 
 import (
 	"fmt"
-	"github.com/hedisam/algods/general/queue"
+	"github.com/hedisam/algods/ds/queue"
 )
 
 type BFS struct {

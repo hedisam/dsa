@@ -4,7 +4,7 @@ import (
 	"math"
 )
 
-func prim(g *Graph, source int) (weight int) {
+func Prim(g *Graph, source int) (weight int) {
 	parent := make([]int, g.nVertices)
 	// is the vertex in the tree
 	intree := make([]bool, g.nVertices)

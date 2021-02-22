@@ -9,7 +9,7 @@ func NewPathFinder(g *Graph, source int) *PathFinder {
 	path := &PathFinder{
 		source: source,
 	}
-	bfs := NewBFS()
+	bfs := NewBFS(g)
 	bfs.Search(g, source)
 	return path
 }

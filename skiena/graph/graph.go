@@ -22,13 +22,17 @@ type Graph struct {
 
 // InsertEdge from x to y.
 func (g *Graph) InsertEdge(x, y int) {
-	g.insertEdge(x, y, g.directed)
+	g.insertEdge(x, y, 1, g.directed)
 }
 
-func (g *Graph) insertEdge(x, y int, directed bool) {
+func (g *Graph) InsertWeightedEdge(x, y, weight int) {
+	g.insertEdge(x, y, weight, g.directed)
+}
+
+func (g *Graph) insertEdge(x, y, weight int, directed bool) {
 	edge := &EdgeNode{
 		y:      y,
-		weight: 1,
+		weight: weight,
 		// point next to the head of the x's adj list. then we assign this new edge to the head of the x's adj list.
 		next:   g.edges[x],
 	}
@@ -42,7 +46,7 @@ func (g *Graph) insertEdge(x, y int, directed bool) {
 		g.nEdges++
 		return
 	}
-	g.insertEdge(y, x, true)
+	g.insertEdge(y, x, weight, true)
 }
 
 // String returns a string displaying the graph.

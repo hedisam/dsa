@@ -2,7 +2,7 @@ package graph
 
 import (
 	"fmt"
-	"github.com/hedisam/algods/general/stack"
+	"github.com/hedisam/algods/ds/stack"
 )
 
 type ArtValue struct {
