@@ -1,7 +1,6 @@
 package graph
 
 import (
-	"fmt"
 	"github.com/hedisam/algods/ds/queue"
 )
 
@@ -11,7 +10,7 @@ type BFS struct {
 	parent []int // discovery relation
 
 	earlyProcessor func(v int)
-	edgeProcessor func(u, v int)
+	edgeProcessor func(x int, edge *EdgeNode)
 	lateProcessor func(v int)
 }
 
@@ -21,7 +20,7 @@ func NewBFS(g *Graph) *BFS {
 		discovered: make([]bool, g.nVertices),
 		parent: make([]int, g.nVertices),
 		earlyProcessor: func(v int) {},
-		edgeProcessor: func(u, v int) {},
+		edgeProcessor: func(x int, edge *EdgeNode) {},
 		lateProcessor: func(v int) {},
 	}
 	s.init()
@@ -47,7 +46,7 @@ func (bfs *BFS) Search(g *Graph, source int) {
 		for p := g.edges[u]; p != nil; p = p.next {
 			v := p.y
 			if !bfs.processed[v] || g.directed {
-				bfs.edgeProcessor(u, v)
+				bfs.edgeProcessor(u, p)
 			}
 			if !bfs.discovered[v] {
 				q.Enqueue(v)
@@ -57,16 +56,4 @@ func (bfs *BFS) Search(g *Graph, source int) {
 		}
 		bfs.lateProcessor(u)
 	}
-}
-
-func (bfs *BFS) processVertexEarly(u int) {
-	fmt.Println("BFS: Processed Vertex:", u)
-}
-
-func (bfs *BFS) processEdge(u, v int) {
-	fmt.Printf("BFS: Processed Edge (%d, %d)\n", u, v)
-}
-
-func (bfs *BFS) processVertexLate(u int) {
-
 }

@@ -2,7 +2,7 @@ package graph
 
 import "testing"
 
-func TestPrimWithHeap(t *testing.T) {
+func TestKruskal(t *testing.T) {
 	g := NewGraph(7, false)
 	g.InsertWeightedEdge(0, 1, 5)
 	g.InsertWeightedEdge(0, 2, 7)
@@ -17,11 +17,11 @@ func TestPrimWithHeap(t *testing.T) {
 	g.InsertWeightedEdge(4, 6, 5)
 	g.InsertWeightedEdge(5, 6, 2)
 
-	mstWeight := PrimWithHeap(g, 0)
+	mstWeight := Kruskal(g)
 
 	want := 23
 
 	if want != mstWeight {
-		t.Errorf("mst prim with heap failed, mst weight wanted: %d, got: %d\n", want, mstWeight)
+		t.Errorf("mst kruskal failed, mst weight wanted: %d, got: %d\n", want, mstWeight)
 	}
 }

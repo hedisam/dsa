@@ -24,13 +24,13 @@ func IsBipartite(g *Graph) bool {
 	bipartite := true
 
 	bfs := NewBFS(g)
-	bfs.edgeProcessor = func(u, v int) {
-		if b.colors[u] == b.colors[v] {
-			fmt.Printf("Not bipartite becuase of edge (%d, %d)\n", u, v)
+	bfs.edgeProcessor = func(x int, e *EdgeNode) {
+		if b.colors[x] == b.colors[e.y] {
+			fmt.Printf("Not bipartite becuase of edge (%d, %d)\n", x, e.y)
 			bipartite = false
 			return
 		}
-		b.colors[v] = b.complement(b.colors[u])
+		b.colors[e.y] = b.complement(b.colors[x])
 	}
 
 	for i := 0; i < g.nVertices; i++ {

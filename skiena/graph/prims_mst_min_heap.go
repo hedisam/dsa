@@ -12,6 +12,10 @@ type EdgeInfo struct {
 	weight int
 }
 
+func (ei *EdgeInfo) String() string {
+	return fmt.Sprintf("%v->%v w:%v", ei.x, ei.y, ei.weight)
+}
+
 func PrimWithHeap(g *Graph, start int) (weight int) {
 	// we store all the edges we discover in a priority queue, then we can pop the cheapest edge to enlarge the tree.
 	pq := NewMinHeap(g.nEdges)

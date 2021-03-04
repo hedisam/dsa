@@ -24,6 +24,6 @@ func TestPrim(t *testing.T) {
 	want := 23
 
 	if want != mstWeight {
-		t.Errorf("mst prim failed, msg weight wanted: %d, got: %d\n", want, mstWeight)
+		t.Errorf("mst prim failed, mst weight wanted: %d, got: %d\n", want, mstWeight)
 	}
 }
