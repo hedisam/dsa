@@ -1,7 +1,6 @@
 package graph
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -33,7 +32,6 @@ func Dijkstra(g *Graph, source int) *ShortestPath {
 	dist[source] = 0
 	v := source
 
-	heapCounter := 0
 	for {
 		for p := g.edges[v]; p != nil; p = p.next {
 			if !visited[p.y] && dist[p.y] > dist[v] + p.weight {
@@ -44,7 +42,6 @@ func Dijkstra(g *Graph, source int) *ShortestPath {
 		visited[v] = true
 
 	nextShortPath:
-		heapCounter++
 		if shortestPath, ok := pq.ExtractMin(); !ok {
 			// we're done
 			break
@@ -57,7 +54,6 @@ func Dijkstra(g *Graph, source int) *ShortestPath {
 		}
 	}
 
-	fmt.Printf("Edges: %d, HeapCounter: %d\n", g.nEdges, heapCounter)
 	return &ShortestPath{
 		source: source,
 		parent: parent,
