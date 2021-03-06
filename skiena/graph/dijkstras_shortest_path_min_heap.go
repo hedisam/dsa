@@ -7,7 +7,7 @@ import (
 type ShortestPath struct {
 	source int
 	parent []int
-	dist []int
+	Dist   []int
 }
 
 func (p *ShortestPath) PathTo(y int) ([]int, int ) {
@@ -15,7 +15,7 @@ func (p *ShortestPath) PathTo(y int) ([]int, int ) {
 	for x := y; x != -1; x = p.parent[x] {
 		path = append(path, x)
 	}
-	return path, p.dist[y]
+	return path, p.Dist[y]
 }
 
 func Dijkstra(g *Graph, source int) *ShortestPath {
@@ -26,7 +26,7 @@ func Dijkstra(g *Graph, source int) *ShortestPath {
 
 	for i := 0; i < g.nVertices; i++ {
 		parent[i] = -1
-		dist[i] = math.MaxInt64
+		dist[i] = math.MaxInt32
 	}
 
 	dist[source] = 0
@@ -57,6 +57,6 @@ func Dijkstra(g *Graph, source int) *ShortestPath {
 	return &ShortestPath{
 		source: source,
 		parent: parent,
-		dist:   dist,
+		Dist:   dist,
 	}
 }
