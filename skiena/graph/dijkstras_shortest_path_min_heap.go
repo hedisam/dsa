@@ -35,7 +35,7 @@ func Dijkstra(g *Graph, source int) *ShortestPath {
 	for {
 		for p := g.edges[v]; p != nil; p = p.next {
 			if !visited[p.y] && dist[p.y] > dist[v] + p.weight {
-				pq.InsertKey(&EdgeInfo{x: v, y: p.y, weight: dist[v] + p.weight})
+				pq.InsertKey(&EdgeInfo{X: v, Y: p.y, W: dist[v] + p.weight})
 			}
 		}
 
@@ -45,12 +45,12 @@ func Dijkstra(g *Graph, source int) *ShortestPath {
 		if shortestPath, ok := pq.ExtractMin(); !ok {
 			// we're done
 			break
-		} else if shortestPath.weight >= dist[shortestPath.y] {
+		} else if shortestPath.W >= dist[shortestPath.Y] {
 			goto nextShortPath
 		} else {
-			dist[shortestPath.y] = shortestPath.weight
-			parent[shortestPath.y] = shortestPath.x
-			v = shortestPath.y
+			dist[shortestPath.Y] = shortestPath.W
+			parent[shortestPath.Y] = shortestPath.X
+			v = shortestPath.Y
 		}
 	}
 

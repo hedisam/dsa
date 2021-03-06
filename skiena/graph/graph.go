@@ -20,7 +20,7 @@ type Graph struct {
 	directed bool // is the graph directed?
 }
 
-// InsertEdge from x to y.
+// InsertEdge from x to Y.
 func (g *Graph) InsertEdge(x, y int) {
 	g.insertEdge(x, y, 1, g.directed)
 }
@@ -95,7 +95,7 @@ func ReadGraph(reader io.Reader, directed bool) (*Graph, error) {
 	for i := 0; i < m; i++ {
 		_, err = fmt.Fscanf(reader, "%d %d\n", &x, &y)
 		if err != nil {
-			return nil, fmt.Errorf("bad format. expected to have an edge as [x y]: %w", err)
+			return nil, fmt.Errorf("bad format. expected to have an edge as [x Y]: %w", err)
 		}
 		g.InsertEdge(x, y)
 	}

@@ -5,22 +5,22 @@ import (
 	"sort"
 )
 
-// Kruskal finds the min spanning tree for graph g and returns the total weight of the mst.
+// Kruskal finds the min spanning tree for graph g and returns the total W of the mst.
 func Kruskal(g *Graph) (weight int) {
 	edges := edgesToArray(g)
-	// sort (asc.) edges based on their weight
+	// sort (asc.) edges based on their W
 	sort.Slice(edges, func(i, j int) bool {
-		return edges[i].weight < edges[j].weight
+		return edges[i].W < edges[j].W
 	})
 
 	uf := unionfind.NewUnionFind(g.nVertices)
 
 	i := 0
 	for uf.Components() > 1 && i < len(edges) {
-		x := edges[i].x
-		y := edges[i].y
+		x := edges[i].X
+		y := edges[i].Y
 		if !uf.Connected(x, y) {
-			weight += edges[i].weight
+			weight += edges[i].W
 			uf.Unify(x, y)
 		}
 		i++
@@ -34,7 +34,7 @@ func edgesToArray(g *Graph) []*EdgeInfo {
 	var i int
 	bfs := NewBFS(g)
 	bfs.edgeProcessor = func(x int, e *EdgeNode) {
-		edges[i] = &EdgeInfo{x: x, y: e.y, weight: e.weight}
+		edges[i] = &EdgeInfo{X: x, Y: e.y, W: e.weight}
 		i++
 	}
 	for v := 0; v < g.nVertices; v++ {

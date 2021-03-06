@@ -22,6 +22,6 @@ func TestPrimWithHeap(t *testing.T) {
 	want := 23
 
 	if want != mstWeight {
-		t.Errorf("mst prim with heap failed, mst weight wanted: %d, got: %d\n", want, mstWeight)
+		t.Errorf("mst prim with heap failed, mst W wanted: %d, got: %d\n", want, mstWeight)
 	}
 }

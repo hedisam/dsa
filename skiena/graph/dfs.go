@@ -73,14 +73,14 @@ func (dfs *DFS) Search(v int) {
 
 			dfs.Search(e.y)
 		} else if dfs.g.directed || !dfs.processed[e.y] && dfs.parent[v] != e.y {
-			// if vertex y is discovered already, we process the edge (v, e.y) only if:
+			// if vertex Y is discovered already, we process the edge (v, e.Y) only if:
 			// the graph is directed, so the edge is directed, and every directed edge is important and should be processed
-			// the graph is undirected: we might be looking at an edge like (y, x) from (x, y, x) so we don't need to
-			// process such edges because we've already processed (x, y). if not so, we only check the edge if y has not
+			// the graph is undirected: we might be looking at an edge like (Y, x) from (x, Y, x) so we don't need to
+			// process such edges because we've already processed (x, Y). if not so, we only check the edge if Y has not
 			// finished processing, which denotes that we're backing to an ancestor. Therefore it's a back-edge. if
-			// e.y has finished processing, then we should've already visited vertex v, thus, the undirected edge (e.y, v)
+			// e.Y has finished processing, then we should've already visited vertex v, thus, the undirected edge (e.Y, v)
 			// has already been processed.
-			// is it necessary to check if e.y is finished or not???
+			// is it necessary to check if e.Y is finished or not???
 			dfs.edgeProcessor(v, e.y)
 		}
 

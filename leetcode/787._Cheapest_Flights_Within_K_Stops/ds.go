@@ -1,62 +1,13 @@
-package graph
+package main
 
 import (
-	"fmt"
 	"math"
-	"strings"
 )
 
 type EdgeInfo struct {
-	X int
-	Y int
+	V int
 	W int
-}
-
-func (ei *EdgeInfo) String() string {
-	return fmt.Sprintf("%v->%v w:%v", ei.X, ei.Y, ei.W)
-}
-
-func PrimWithHeap(g *Graph, start int) (weight int) {
-	// we store all the edges we discover in a priority queue, then we can pop the cheapest edge to enlarge the tree.
-	pq := NewMinHeap(g.nEdges)
-
-	intree := make([]bool, g.nVertices)
-	parent := make([]int, g.nVertices)
-	for i := 0; i < len(parent); i++ {
-		parent[i] = -1
-	}
-
-	v := start
-	nEdges := 0
-	// the number of edges included in the mst would be equal to the number of vertices - 1.
-	// so we keep the loop until we have enough edges added to the tree.
-	for nEdges != g.nVertices - 1 {
-		intree[v] = true
-
-		for p := g.edges[v]; p != nil; p = p.next {
-			if !intree[p.y] {
-				pq.InsertKey(&EdgeInfo{
-					X: v,
-					Y: p.y,
-					W: p.weight,
-				})
-			}
-		}
-
-	nextEdge:
-		cheapestEdge, _ := pq.ExtractMin()
-		if intree[cheapestEdge.Y] {
-			goto nextEdge
-		}
-		fmt.Printf("Edge (%d, %d) is in the MST\n", cheapestEdge.X, cheapestEdge.Y)
-		w := cheapestEdge.Y
-		weight += cheapestEdge.W
-		nEdges++
-		parent[w] = cheapestEdge.X
-		v = w
-	}
-
-	return
+	K int
 }
 
 type MinHeap struct {
@@ -199,25 +150,6 @@ func (h *MinHeap) siftDown(i int) {
 	}
 }
 
-func (h *MinHeap) String() string {
-	if h.size == 0 {
-		return "Empty Min-Heap"
-	}
-
-	var sb strings.Builder
-	sb.WriteString("[")
-
-	for i, e := range h.array {
-		_, _ = fmt.Fprint(&sb, e)
-		if i == h.size {
-			break
-		}
-		sb.WriteString(", ")
-	}
-	sb.WriteString("]")
-	return sb.String()
-}
-
 func NewMinHeap(capacity int) *MinHeap {
 	return &MinHeap{
 		capacity: capacity,
@@ -225,4 +157,3 @@ func NewMinHeap(capacity int) *MinHeap {
 		array:    make([]*EdgeInfo, capacity),
 	}
 }
-

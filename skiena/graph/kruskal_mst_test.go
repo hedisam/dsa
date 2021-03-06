@@ -22,6 +22,6 @@ func TestKruskal(t *testing.T) {
 	want := 23
 
 	if want != mstWeight {
-		t.Errorf("mst kruskal failed, mst weight wanted: %d, got: %d\n", want, mstWeight)
+		t.Errorf("mst kruskal failed, mst W wanted: %d, got: %d\n", want, mstWeight)
 	}
 }
