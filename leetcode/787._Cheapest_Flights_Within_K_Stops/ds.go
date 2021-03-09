@@ -25,7 +25,9 @@ func (h *MinHeap) Size() int {
 // returns false if the heap is full
 func (h *MinHeap) InsertKey(key *EdgeInfo) bool {
 	if h.size == h.capacity {
-		return false
+		arr := make([]*EdgeInfo, h.capacity)
+		h.array = append(h.array, arr...)
+		h.capacity += h.capacity
 	}
 
 	// insert the new key at the end
