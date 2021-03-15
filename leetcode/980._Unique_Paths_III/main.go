@@ -41,7 +41,6 @@ func uniquePathsIII(grid [][]int) int {
 			}
 		}
 	}
-	fmt.Println(si, sj)
 	return up3(grid, si, sj, p)
 }
 
