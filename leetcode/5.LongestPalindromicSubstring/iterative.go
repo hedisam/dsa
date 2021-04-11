@@ -4,7 +4,8 @@ import "fmt"
 
 func main() {
 	text := "hello"
-	fmt.Println(text[-1])
+	fmt.Printf("Longest Palindrome of %s: %s\n", text, LongestPalind(text))
+	fmt.Printf("Is %s Palindrome? %v\n", text, IsPalind(text, 0, len(text)))
 }
 
 func LongestPalind(s string) string {
