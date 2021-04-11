@@ -2,9 +2,11 @@ package avl
 
 import (
 	"fmt"
+	"math/rand"
 	"reflect"
 	"sort"
 	"testing"
+	"time"
 )
 
 var keys = []int{2, 7, 6, 3, 10, 8, 40, 1}
@@ -46,7 +48,11 @@ func TestSearch(t *testing.T) {
 func TestDelete(t *testing.T) {
 	sbt := buildAVL(keys)
 
-	key := 6
+	testDelete(t, sbt)
+}
+
+func testDelete(t *testing.T, sbt *AVL) {
+	key := sbt.root.Key
 	sbt.Delete(key)
 
 	// the bst must remain sorted 
@@ -82,6 +88,30 @@ func testMaxBalance(t *testing.T, sbt *AVL) {
 	}
 }
 
+func Test(t *testing.T) {
+	arrrays := genRandomArrays(1000, 100)
+	
+	for _, arr := range arrrays {
+		avlTree := buildAVL(arr)
+		testMaxBalance(t, avlTree)
+		testDelete(t, avlTree)
+	}
+}
+
+func genRandomArrays(m, n int) [][]int {
+	source := rand.NewSource(time.Now().Unix())
+	rnd := rand.New(source)
+	arrays := make([][]int, m)
+	for i := 0; i < m; i++ {
+		arrays[i] = make([]int, n)
+		for j := 0; j < n; j++ {
+			arrays[i][j] = rnd.Int()
+		}
+	}
+
+	return arrays
+}
+
 func buildAVL(keys []int) *AVL {
 	sbt := &AVL{}
 
@@ -91,3 +121,44 @@ func buildAVL(keys []int) *AVL {
 
 	return sbt 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
