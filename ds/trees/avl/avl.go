@@ -1,4 +1,4 @@
-package avl 
+package avl
 
 // AVLNode represents a node of an AVL tree
 type AVLNode struct {
@@ -13,11 +13,12 @@ type AVL struct {
 	root *AVLNode
 }
 
+
 func height(node *AVLNode) int {
 	if node == nil {
 		return 0 
 	}
-
+	
 	return node.Height
 }
 
@@ -31,11 +32,11 @@ func max(a, b int) int {
 func (avl *AVL) rotateRight(y *AVLNode) *AVLNode {
 	x := y.Left
 	t2 := x.Right
-
+	
 	// perform rotation
 	x.Right = y 
 	y.Left = t2 
-
+	
 	// update heights 
 	y.Height = max(height(y.Left), height(y.Right)) + 1 
 	x.Height = max(height(x.Left), height(x.Right)) + 1 
@@ -46,13 +47,13 @@ func (avl *AVL) rotateRight(y *AVLNode) *AVLNode {
 func (avl *AVL) rotateLeft(x *AVLNode) *AVLNode {
 	y := x.Right
 	t2 := y.Left
-
+	
 	y.Left = x 
 	x.Right = t2 
-
-	y.Height = max(height(y.Left), height(y.Right)) + 1 
+	
 	x.Height = max(height(x.Left), height(x.Right)) + 1 
-
+	y.Height = max(height(y.Left), height(y.Right)) + 1 
+	
 	return y 
 }
 
@@ -64,8 +65,26 @@ func (avl *AVL) balance(node *AVLNode) int {
 	return height(node.Left) - height(node.Right)
 }
 
-func (avl *AVL) Insert(key int) *AVLNode {
-	return avl.insert(avl.root, key)
+func (avl *AVL) Search(key int) bool {
+	return avl.search(avl.root, key)
+}
+
+func (avl *AVL) search(root *AVLNode, key int) bool {
+	if root == nil {
+		return false 
+	}
+
+	if key < root.Key {
+		return avl.search(root.Left, key)
+	} else if key > root.Key {
+		return avl.search(root.Right, key)
+	} else {
+		return true 
+	}
+}
+
+func (avl *AVL) Insert(key int) {
+	avl.root = avl.insert(avl.root, key)
 }
 
 func (avl *AVL) insert(node *AVLNode, key int) *AVLNode {
@@ -73,16 +92,16 @@ func (avl *AVL) insert(node *AVLNode, key int) *AVLNode {
 	if node == nil {
 		return NewAVLNode(key)
 	}
-
+	
 	if key < node.Key {
 		node.Left = avl.insert(node.Left, key)
 	} else if key > node.Key {
 		node.Right = avl.insert(node.Right, key)
-	} else {
+		} else {
 		// duplicate key 
 		return node 
 	}
-
+	
 	// update height of this ancestor node 
 	node.Height = 1 + max(height(node.Left), height(node.Right))
 
@@ -129,32 +148,23 @@ func (avl *AVL) delete(root *AVLNode, key int) *AVLNode {
 		root.Left = avl.delete(root.Left, key)
 	} else if key > root.Key {
 		root.Right = avl.delete(root.Right, key)
-	} else { // found it
-		var temp *AVLNode
-
-		// node with one or no child 
-		if root.Left == nil || root.Right == nil {
-			temp = root.Left
-			if temp == nil {
-				temp = root.Right
-			}
-
-			// no child case 
-			if temp == nil {
-				temp = root 
-				root = nil 
-			} else { // at least one child 
-				*root = *temp 
-			}
-		} else { // node with two children 
-			temp = avl.successorNode(root)
-			root.Key = temp.Key 
-			root.Right = avl.delete(root.Right, temp.Key)
+	} else {
+		// found it
+		if root.Right != nil && root.Left != nil {
+			// having two children
+			successorNode := avl.successorNode(root)
+			root.Key = successorNode.Key
+			root.Right = avl.delete(root.Right, root.Key)
+		} else if root.Left != nil {
+			// having one child (the left one)
+			*root = *root.Left
+		} else if root.Right != nil {
+			// having one child (the right one)
+			*root = *root.Right
+		} else {
+			// no children (so it's a leaf node)
+			return nil 
 		}
-	}
-
-	if root == nil {
-		return nil 
 	}
 
 	// update height of the current node 
@@ -179,7 +189,7 @@ func (avl *AVL) delete(root *AVLNode, key int) *AVLNode {
 
 	// right right case 
 	if balance < -1 && avl.balance(root.Right) <= 0 {
-		return avl.rotateRight(root)
+		return avl.rotateLeft(root)
 	}
 
 	// right left case 
@@ -198,6 +208,39 @@ func (avl *AVL) successorNode(root *AVLNode) *AVLNode {
 	for node = root.Right; node.Left != nil; node = node.Left {} 
 	return node 
 }
+
+func (avl *AVL) InOrder(writer func(key int)) {
+	avl.inOrder(avl.root, writer)
+}
+
+func (avl *AVL) inOrder(node *AVLNode, w func(key int)) {
+	if node == nil {
+		return
+	}
+	avl.inOrder(node.Left, w)
+	w(node.Key)
+	avl.inOrder(node.Right, w)
+}
+
+func (avl *AVL) MaxBalance() int {
+	return avl.maxBalance(avl.root)
+}
+
+func (avl *AVL) maxBalance(root *AVLNode) int {
+	rootBalance := avl.balance(root)
+	leftBalance := avl.balance(root.Left)
+	rightBalance := avl.balance(root.Right)
+
+	max := rootBalance
+	if leftBalance > max {
+		max = leftBalance
+	}
+	if rightBalance > max {
+		max = rightBalance
+	}
+	return max
+}
+
 
 func NewAVL(root int) *AVL {
 	return &AVL{
