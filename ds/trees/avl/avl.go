@@ -117,6 +117,88 @@ func (avl *AVL) insert(node *AVLNode, key int) *AVLNode {
 	return node 
 }
 
+func (avl *AVL) Delete(key int) {
+	avl.root = avl.delete(avl.root, key)
+}
+
+func (avl *AVL) delete(root *AVLNode, key int) *AVLNode {
+	// perform a std bst delete 
+	if root == nil {return nil}
+
+	if key < root.Key {
+		root.Left = avl.delete(root.Left, key)
+	} else if key > root.Key {
+		root.Right = avl.delete(root.Right, key)
+	} else { // found it
+		var temp *AVLNode
+
+		// node with one or no child 
+		if root.Left == nil || root.Right == nil {
+			temp = root.Left
+			if temp == nil {
+				temp = root.Right
+			}
+
+			// no child case 
+			if temp == nil {
+				temp = root 
+				root = nil 
+			} else { // at least one child 
+				*root = *temp 
+			}
+		} else { // node with two children 
+			temp = avl.successorNode(root)
+			root.Key = temp.Key 
+			root.Right = avl.delete(root.Right, temp.Key)
+		}
+	}
+
+	if root == nil {
+		return nil 
+	}
+
+	// update height of the current node 
+	root.Height = max(height(root.Left), height(root.Right)) + 1
+
+	// check if this subtree rooted at the current node is still balanced or not
+
+	balance := avl.balance(root)
+
+	// we will have 4 cases in case of having an unbalanced subtree 
+
+	// left left case 
+	if balance > 1 && avl.balance(root.Left) >= 0 {
+		return avl.rotateRight(root)
+	}
+	
+	// left right case 
+	if balance > 1 && avl.balance(root.Left) < 0 {
+		root.Left = avl.rotateLeft(root.Left)
+		return avl.rotateRight(root)
+	}
+
+	// right right case 
+	if balance < -1 && avl.balance(root.Right) <= 0 {
+		return avl.rotateRight(root)
+	}
+
+	// right left case 
+	if balance < -1  && avl.balance(root.Right) > 0 {
+		root.Right = avl.rotateRight(root.Right)
+		return avl.rotateLeft(root)
+	}
+
+	return root 
+}
+
+// successorNode returns the next largest element of the node 
+func (avl *AVL) successorNode(root *AVLNode) *AVLNode {
+	if root == nil {return nil}
+	var node *AVLNode
+	for node = root.Right; node.Left != nil; node = node.Left {} 
+	return node 
+}
+
 func NewAVL(root int) *AVL {
 	return &AVL{
 		root: NewAVLNode(root),
