@@ -38,11 +38,11 @@ func TestIsPalindrome(t *testing.T) {
 func TestLongestPalindrome(t *testing.T) {
 	for _, tt := range table {
 		t.Run(fmt.Sprintf("Longest palindrome of %s", tt.text), func(t *testing.T) {
-			memo := make(map[string]string)
+			memo := make(map[Point]Point)
 			longest := LongestPalindrome(tt.text, 0, len(tt.text), memo)
-			if len(longest) != tt.longest {
+			if PointLength(&longest) != tt.longest {
 				t.Errorf("got %s (%d), wanted (%d)",
-					longest, len(longest), tt.longest)
+					tt.text[longest.Start:longest.End], PointLength(&longest), tt.longest)
 			}
 		})
 	}
