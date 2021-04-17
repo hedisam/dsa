@@ -1,4 +1,4 @@
-package trie 
+package trie
 
 // Trie represents a trie (prefix tree) data structure
 type Trie struct {
@@ -65,4 +65,23 @@ func (t *Trie) delete(root *Node, key string, index int) {
 	}
 
 	t.delete(root.Children[key[index]], key, index+1)
+}
+
+func (t *Trie) Content() []string {
+	var words []string 
+	t.content(t.root, &words, "") 
+	return words 
+}
+
+func (t *Trie) content(root *Node, words *[]string, sb string) {
+	for key, node := range root.Children {
+		sb += string(key)
+		if node.IsWord {
+			*words = append(*words, sb)
+		}
+		t.content(node, words, sb)
+		if len(root.Children) > 1 {
+			sb = sb[:len(sb)-1]
+		}
+	}
 }
