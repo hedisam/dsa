@@ -7,6 +7,33 @@ import (
 )
 
 func Test(t *testing.T) {
+	t.Run("test autocomplete", func(t *testing.T) {
+		tr := NewTrie()
+		input := []string{"Hidayat", "Hello", "Hi", "He", "What", "We", "With"}
+		for _, word := range input {
+			tr.Insert(word)
+		}
+
+		expected := []string{"We", "With", "What"}
+		sort.Strings(expected)
+		suggestions := tr.AutoComplete("W")
+		sort.Strings(suggestions)
+		if !reflect.DeepEqual(expected, suggestions) {
+			t.Errorf("trie autocomplete failed: expected: %v, got: %v", expected, suggestions)
+		}
+
+		expected = []string{"With"}
+		suggestions = tr.AutoComplete("Wi")
+		if !reflect.DeepEqual(expected, suggestions) {
+			t.Errorf("trie autocomplete failed: expected: %v, got: %v", expected, suggestions)
+		}
+
+		suggestions = tr.AutoComplete("Why")
+		if len(suggestions) > 0 {
+			t.Errorf("trie autocomplete failed: expected to have zero suggestions, got: %v", suggestions)
+		}
+	})
+
 	t.Run("test content", func(t *testing.T) {
 		tr := NewTrie()
 

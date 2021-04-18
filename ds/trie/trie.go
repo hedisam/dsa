@@ -67,6 +67,31 @@ func (t *Trie) delete(root *Node, key string, index int) {
 	t.delete(root.Children[key[index]], key, index+1)
 }
 
+func (t *Trie) AutoComplete(query string) []string {
+	return t.autoComplete(query)
+}
+
+func (t *Trie) autoComplete(query string) []string {
+	// first we need to search for the query and find a node (the node with last char in the query) to start traversing from
+	var root *Node = t.root 
+	var ok bool 
+	var index int 
+search: 
+	root, ok = root.Children[query[index]]
+	if !ok {
+		return []string{}
+	} else if index == len(query) - 1 {
+		// found the node to start with 		
+	} else {
+		index++
+		goto search 
+	}
+
+	var words []string 
+	t.content(root, &words, query)
+	return words 
+}
+
 func (t *Trie) Content() []string {
 	var words []string 
 	t.content(t.root, &words, "") 
